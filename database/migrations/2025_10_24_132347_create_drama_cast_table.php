@@ -1,27 +1,24 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateDramaCastTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('drama_cast', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('drama_id')->constrained()->onDelete('cascade');
+            $table->foreignId('cast_id')->constrained()->onDelete('cascade');
+            $table->string('character_name');
+            $table->string('role_type')->default('supporting'); // lead, supporting, guest
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('drama_cast');
     }
-};
+}
