@@ -82,7 +82,7 @@
         
         <div class="text-center mt-4" data-aos="fade-up">
             <a href="{{ route('dramas.index') }}" class="btn btn-primary">
-                <i class="fas fa-th-large me-2"></i>View All Dramas
+                <i class="fas fa-th-large me-2"></i>View All Dramas/Movies
             </a>
         </div>
     </div>

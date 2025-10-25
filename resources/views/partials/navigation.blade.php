@@ -77,7 +77,7 @@
                     <form action="{{ route('dramas.index') }}" method="GET" class="d-flex">
                         <div class="input-group">
                             <input type="text" name="search" class="form-control form-control-sm" 
-                                   placeholder="Search dramas..." value="{{ request('search') }}">
+                                   placeholder="Search dramas/movies..." value="{{ request('search') }}">
                             <button class="btn btn-outline-light btn-sm" type="submit">
                                 <i class="fas fa-search"></i>
                             </button>

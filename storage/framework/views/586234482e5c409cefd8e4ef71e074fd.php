@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'Browse Dramas & Movies - DramaVault')
 
-@section('content')
+<?php $__env->startSection('title', 'Browse Dramas & Movies - DramaVault'); ?>
+
+<?php $__env->startSection('content'); ?>
 <!-- Page Header with Gradient Background -->
 <section class="bg-primary text-white py-5 mb-4">
     <div class="container">
@@ -23,7 +23,7 @@
         <div class="col-12">
             <div class="card shadow-sm border-0" data-aos="fade-up">
                 <div class="card-body">
-                    <form action="{{ route('dramas.index') }}" method="GET" class="row g-3">
+                    <form action="<?php echo e(route('dramas.index')); ?>" method="GET" class="row g-3">
                         <!-- Search -->
                         <div class="col-md-3">
                             <label class="form-label fw-bold small">
@@ -31,7 +31,7 @@
                             </label>
                             <input type="text" name="search" class="form-control" 
                                    placeholder="Search dramas/movies..." 
-                                   value="{{ request('search') }}">
+                                   value="<?php echo e(request('search')); ?>">
                         </div>
 
                         <!-- Genre Filter -->
@@ -41,11 +41,12 @@
                             </label>
                             <select name="genre" class="form-select">
                                 <option value="">All Genres</option>
-                                @foreach($genres as $genre)
-                                <option value="{{ $genre->slug }}" {{ request('genre') == $genre->slug ? 'selected' : '' }}>
-                                    {{ $genre->name }}
+                                <?php $__currentLoopData = $genres; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $genre): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($genre->slug); ?>" <?php echo e(request('genre') == $genre->slug ? 'selected' : ''); ?>>
+                                    <?php echo e($genre->name); ?>
+
                                 </option>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
 
@@ -56,9 +57,9 @@
                             </label>
                             <select name="type" class="form-select">
                                 <option value="">All Types</option>
-                                <option value="drama" {{ request('type') == 'drama' ? 'selected' : '' }}>Drama</option>
-                                <option value="series" {{ request('type') == 'series' ? 'selected' : '' }}>Series</option>
-                                <option value="movie" {{ request('type') == 'movie' ? 'selected' : '' }}>Movie</option>
+                                <option value="drama" <?php echo e(request('type') == 'drama' ? 'selected' : ''); ?>>Drama</option>
+                                <option value="series" <?php echo e(request('type') == 'series' ? 'selected' : ''); ?>>Series</option>
+                                <option value="movie" <?php echo e(request('type') == 'movie' ? 'selected' : ''); ?>>Movie</option>
                             </select>
                         </div>
 
@@ -69,10 +70,10 @@
                             </label>
                             <select name="country" class="form-select">
                                 <option value="">All Countries</option>
-                                <option value="South Korea" {{ request('country') == 'South Korea' ? 'selected' : '' }}>South Korea</option>
-                                <option value="Japan" {{ request('country') == 'Japan' ? 'selected' : '' }}>Japan</option>
-                                <option value="China" {{ request('country') == 'China' ? 'selected' : '' }}>China</option>
-                                <option value="Thailand" {{ request('country') == 'Thailand' ? 'selected' : '' }}>Thailand</option>
+                                <option value="South Korea" <?php echo e(request('country') == 'South Korea' ? 'selected' : ''); ?>>South Korea</option>
+                                <option value="Japan" <?php echo e(request('country') == 'Japan' ? 'selected' : ''); ?>>Japan</option>
+                                <option value="China" <?php echo e(request('country') == 'China' ? 'selected' : ''); ?>>China</option>
+                                <option value="Thailand" <?php echo e(request('country') == 'Thailand' ? 'selected' : ''); ?>>Thailand</option>
                             </select>
                         </div>
 
@@ -82,10 +83,10 @@
                                 <i class="fas fa-sort me-1"></i>Sort By
                             </label>
                             <select name="sort" class="form-select">
-                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
-                                <option value="rating" {{ request('sort') == 'rating' ? 'selected' : '' }}>Top Rated</option>
-                                <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Popular</option>
-                                <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Title A-Z</option>
+                                <option value="latest" <?php echo e(request('sort') == 'latest' ? 'selected' : ''); ?>>Latest</option>
+                                <option value="rating" <?php echo e(request('sort') == 'rating' ? 'selected' : ''); ?>>Top Rated</option>
+                                <option value="popular" <?php echo e(request('sort') == 'popular' ? 'selected' : ''); ?>>Popular</option>
+                                <option value="title" <?php echo e(request('sort') == 'title' ? 'selected' : ''); ?>>Title A-Z</option>
                             </select>
                         </div>
 
@@ -98,27 +99,27 @@
                     </form>
                     
                     <!-- Active Filters & Clear Button -->
-                    @if(request()->hasAny(['search', 'genre', 'type', 'country', 'sort']))
+                    <?php if(request()->hasAny(['search', 'genre', 'type', 'country', 'sort'])): ?>
                     <div class="mt-3 d-flex justify-content-between align-items-center">
                         <div>
-                            @if(request('search'))
-                                <span class="badge bg-primary me-1">Search: {{ request('search') }}</span>
-                            @endif
-                            @if(request('genre'))
-                                <span class="badge bg-primary me-1">Genre: {{ request('genre') }}</span>
-                            @endif
-                            @if(request('type'))
-                                <span class="badge bg-primary me-1">Type: {{ request('type') }}</span>
-                            @endif
-                            @if(request('country'))
-                                <span class="badge bg-primary me-1">Country: {{ request('country') }}</span>
-                            @endif
+                            <?php if(request('search')): ?>
+                                <span class="badge bg-primary me-1">Search: <?php echo e(request('search')); ?></span>
+                            <?php endif; ?>
+                            <?php if(request('genre')): ?>
+                                <span class="badge bg-primary me-1">Genre: <?php echo e(request('genre')); ?></span>
+                            <?php endif; ?>
+                            <?php if(request('type')): ?>
+                                <span class="badge bg-primary me-1">Type: <?php echo e(request('type')); ?></span>
+                            <?php endif; ?>
+                            <?php if(request('country')): ?>
+                                <span class="badge bg-primary me-1">Country: <?php echo e(request('country')); ?></span>
+                            <?php endif; ?>
                         </div>
-                        <a href="{{ route('dramas.index') }}" class="btn btn-outline-secondary btn-sm">
+                        <a href="<?php echo e(route('dramas.index')); ?>" class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-times me-1"></i>Clear All
                         </a>
                     </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -130,7 +131,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <p class="text-muted mb-0">
                     <i class="fas fa-list me-2"></i>
-                    Showing {{ $dramas->firstItem() ?? 0 }} - {{ $dramas->lastItem() ?? 0 }} of {{ $dramas->total() }} results
+                    Showing <?php echo e($dramas->firstItem() ?? 0); ?> - <?php echo e($dramas->lastItem() ?? 0); ?> of <?php echo e($dramas->total()); ?> results
                 </p>
             </div>
         </div>
@@ -138,83 +139,87 @@
 
     <!-- Dramas Grid -->
     <div class="row g-4 mb-4">
-        @forelse($dramas as $drama)
-        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="{{ ($loop->index % 6) * 50 }}">
-            <a href="{{ route('dramas.show', $drama->slug) }}" class="text-decoration-none">
+        <?php $__empty_1 = true; $__currentLoopData = $dramas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $drama): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="<?php echo e(($loop->index % 6) * 50); ?>">
+            <a href="<?php echo e(route('dramas.show', $drama->slug)); ?>" class="text-decoration-none">
                 <div class="card drama-card border-0 shadow-sm h-100">
                     <div class="position-relative overflow-hidden">
-                        <img src="{{ $drama->poster_url }}" 
+                        <img src="<?php echo e($drama->poster_url); ?>" 
                              class="card-img-top drama-poster" 
-                             alt="{{ $drama->title }}"
+                             alt="<?php echo e($drama->title); ?>"
                              style="height: 300px; object-fit: cover;"
-                             onerror="this.onerror=null; this.src='{{ asset('images/default-poster.png') }}';">
+                             onerror="this.onerror=null; this.src='<?php echo e(asset('images/default-poster.png')); ?>';">
                         
-                        @if($drama->is_featured)
+                        <?php if($drama->is_featured): ?>
                         <div class="position-absolute top-0 end-0 m-2">
                             <span class="badge bg-warning text-dark">
                                 <i class="fas fa-crown me-1"></i>Featured
                             </span>
                         </div>
-                        @endif
+                        <?php endif; ?>
                         
                         <div class="position-absolute bottom-0 start-0 w-100 p-2" 
                              style="background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);">
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-warning fw-bold">
-                                    <i class="fas fa-star me-1"></i>{{ number_format($drama->avg_rating ?? 0, 1) }}
+                                    <i class="fas fa-star me-1"></i><?php echo e(number_format($drama->avg_rating ?? 0, 1)); ?>
+
                                 </small>
-                                <small class="text-white">{{ $drama->release_year }}</small>
+                                <small class="text-white"><?php echo e($drama->release_year); ?></small>
                             </div>
                         </div>
                     </div>
                     
                     <div class="card-body p-3">
                         <h6 class="card-title fw-bold mb-2 text-dark" style="min-height: 40px;">
-                            {{ Str::limit($drama->title, 35) }}
+                            <?php echo e(Str::limit($drama->title, 35)); ?>
+
                         </h6>
                         <div class="d-flex justify-content-between text-muted small mb-2">
-                            <span><i class="fas fa-tag me-1"></i>{{ ucfirst($drama->type) }}</span>
-                            <span><i class="fas fa-list me-1"></i>{{ $drama->episodes }} eps</span>
+                            <span><i class="fas fa-tag me-1"></i><?php echo e(ucfirst($drama->type)); ?></span>
+                            <span><i class="fas fa-list me-1"></i><?php echo e($drama->episodes); ?> eps</span>
                         </div>
                         <div class="genres">
-                            @foreach($drama->genres->take(2) as $genre)
+                            <?php $__currentLoopData = $drama->genres->take(2); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $genre): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <span class="badge bg-primary bg-opacity-10 text-primary me-1 mb-1" style="font-size: 0.7rem;">
-                                {{ $genre->name }}
+                                <?php echo e($genre->name); ?>
+
                             </span>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
                 </div>
             </a>
         </div>
-        @empty
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
         <div class="col-12" data-aos="fade-up">
             <div class="text-center py-5">
                 <i class="fas fa-film fa-4x text-muted mb-4"></i>
                 <h4 class="mb-3">No dramas found</h4>
                 <p class="text-muted mb-4">Try adjusting your filters or search terms</p>
-                <a href="{{ route('dramas.index') }}" class="btn btn-primary btn-lg">
+                <a href="<?php echo e(route('dramas.index')); ?>" class="btn btn-primary btn-lg">
                     <i class="fas fa-redo me-2"></i>Reset Filters
                 </a>
             </div>
         </div>
-        @endforelse
+        <?php endif; ?>
     </div>
 
     <!-- Pagination -->
-    @if($dramas->hasPages())
+    <?php if($dramas->hasPages()): ?>
     <div class="row mt-5">
         <div class="col-12" data-aos="fade-up">
             <div class="d-flex justify-content-center">
-                {{ $dramas->links('vendor.pagination.custom') }}
+                <?php echo e($dramas->links('vendor.pagination.custom')); ?>
+
             </div>
         </div>
     </div>
-    @endif
+    <?php endif; ?>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
 /* Drama Card Hover Effects */
 .drama-card {
@@ -258,4 +263,6 @@
     overflow: hidden;
 }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH E:\XAMPP\htdocs\DramaVault\resources\views/dramas/index.blade.php ENDPATH**/ ?>

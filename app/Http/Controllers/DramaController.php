@@ -58,37 +58,37 @@ class DramaController extends Controller
     // Public: Browse dramas
     public function index(Request $request)
     {
-        $query = Drama::with(['genres', 'ratings']);
+        $query = Drama::query();
 
         // Search
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
         // Filter by genre
-        if ($request->has('genre')) {
+        if ($request->filled('genre')) {
             $query->whereHas('genres', function ($q) use ($request) {
                 $q->where('slug', $request->genre);
             });
         }
 
         // Filter by type
-        if ($request->has('type')) {
+        if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
 
         // Filter by country
-        if ($request->has('country')) {
+        if ($request->filled('country')) {
             $query->where('country', $request->country);
         }
 
         // Filter by year
-        if ($request->has('year')) {
+        if ($request->filled('year')) {
             $query->where('release_year', $request->year);
         }
 
         // Filter by status
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
@@ -108,7 +108,7 @@ class DramaController extends Controller
                 $query->latest();
         }
 
-        $dramas = $query->paginate(12);
+        $dramas = $query->with(['genres'])->paginate(12)->appends($request->query());
         $genres = Genre::all();
         
         return view('dramas.index', compact('dramas', 'genres'));

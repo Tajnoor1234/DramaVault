@@ -78,17 +78,20 @@
                                     {{ $userRating ? 'Update Rating' : 'Submit Rating' }}
                                 </button>
                                 @if($userRating)
-                                <form action="{{ route('ratings.destroy', $userRating->id) }}" method="POST" class="d-inline" id="delete-rating-form-{{ $userRating->id }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn btn-outline-danger" 
-                                            onclick="confirmDeleteRating({{ $userRating->id }})">
-                                        <i class="fas fa-trash me-1"></i>Remove
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn-outline-danger" 
+                                        onclick="confirmDeleteRating({{ $userRating->id }})">
+                                    <i class="fas fa-trash me-1"></i>Remove
+                                </button>
                                 @endif
                             </div>
                         </form>
+                        
+                        @if($userRating)
+                        <form action="{{ route('ratings.destroy', $userRating->id) }}" method="POST" class="d-none" id="delete-rating-form-{{ $userRating->id }}">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                        @endif
                     </div>
                     @else
                     <div class="alert alert-info">
@@ -539,12 +542,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     stars.forEach(star => {
         star.addEventListener('click', function() {
-            const rating = this.getAttribute('data-rating');
+            const rating = parseInt(this.getAttribute('data-rating'));
             document.getElementById('rating-input').value = rating;
             
             // Update star display
             stars.forEach(s => {
-                if (s.getAttribute('data-rating') <= rating) {
+                const starValue = parseInt(s.getAttribute('data-rating'));
+                if (starValue <= rating) {
                     s.classList.add('text-warning', 'active');
                     s.classList.remove('text-muted');
                 } else {
@@ -553,7 +557,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+        
+        // Hover effect
+        star.addEventListener('mouseenter', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            stars.forEach(s => {
+                const starValue = parseInt(s.getAttribute('data-rating'));
+                if (starValue <= rating) {
+                    s.classList.add('hover');
+                } else {
+                    s.classList.remove('hover');
+                }
+            });
+        });
     });
+    
+    // Remove hover effect when mouse leaves the rating container
+    const ratingContainer = document.querySelector('.rating-stars.interactive');
+    if (ratingContainer) {
+        ratingContainer.addEventListener('mouseleave', function() {
+            stars.forEach(s => {
+                s.classList.remove('hover');
+            });
+        });
+    }
 
     @auth
     // Load user's like/dislike states for all comments
