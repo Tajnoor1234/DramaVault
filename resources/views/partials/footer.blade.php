@@ -34,9 +34,12 @@
                 <p class="text-muted mb-0">&copy; 2024 DramaVault. All rights reserved.</p>
             </div>
             <div class="col-md-6 text-md-end">
-                <a href="#" class="text-muted text-decoration-none me-3">Privacy Policy</a>
+                <a href="{{ route('privacy-policy') }}" class="text-muted text-decoration-none me-3">Privacy Policy</a>
                 <a href="#" class="text-muted text-decoration-none me-3">Terms of Service</a>
-                <a href="#" class="text-muted text-decoration-none">Contact</a>
+                <a href="#" class="text-muted text-decoration-none me-3">Contact</a>
+                <button onclick="manageCookiePreferences()" class="btn btn-link text-muted text-decoration-none p-0">
+                    <i class="fas fa-cookie-bite me-1"></i>Cookie Settings
+                </button>
             </div>
         </div>
     </div>

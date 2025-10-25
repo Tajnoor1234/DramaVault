@@ -177,4 +177,40 @@ class AdminController extends Controller
 
         return view('admin.news.index', compact('news'));
     }
+
+    public function casts(Request $request)
+    {
+        $query = \App\Models\Cast::withCount('dramas');
+
+        // Search
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('bio', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter by gender
+        if ($request->filled('gender')) {
+            $query->where('gender', $request->gender);
+        }
+
+        // Sort
+        $sort = $request->get('sort', 'name');
+        switch ($sort) {
+            case 'latest':
+                $query->latest();
+                break;
+            case 'oldest':
+                $query->oldest();
+                break;
+            case 'most_dramas':
+                $query->orderBy('dramas_count', 'desc');
+                break;
+            default:
+                $query->orderBy('name');
+        }
+
+        $casts = $query->paginate(20)->withQueryString();
+
+        return view('admin.casts.index', compact('casts'));
+    }
 }

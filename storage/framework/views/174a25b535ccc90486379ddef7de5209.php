@@ -137,20 +137,21 @@
                 <?php endif; ?>
             </ul>
         </div>
-    </div>
-</nav>
+    </nav>
+</div>
 
-<!-- Floating Admin Lock Icon -->
-<?php
-    $isAdmin = auth()->check() && auth()->user()->role === 'admin';
-?>
-<a href="<?php echo e($isAdmin ? route('admin.dashboard') : route('login', ['redirect' => 'admin'])); ?>" 
-   class="floating-admin-btn btn btn-dark shadow-lg" 
-   title="<?php echo e($isAdmin ? 'Admin Dashboard' : 'Admin Login'); ?>"
-   data-bs-toggle="tooltip"
-   data-bs-placement="left">
-    <i class="fas fa-lock"></i>
-</a>
+<!-- Floating Admin Access Button (Only for Admins) -->
+<?php if(auth()->guard()->check()): ?>
+    <?php if(auth()->user()->is_admin): ?>
+    <a href="<?php echo e(route('admin.dashboard')); ?>" 
+       class="floating-admin-btn btn btn-dark shadow-lg" 
+       data-bs-toggle="tooltip" 
+       data-bs-placement="left" 
+       title="Admin Dashboard">
+        <i class="fas fa-lock"></i>
+    </a>
+    <?php endif; ?>
+<?php endif; ?>
 
 <!-- Auth Required Modal -->
 <div class="modal fade" id="authRequiredModal" tabindex="-1" aria-labelledby="authRequiredModalLabel" aria-hidden="true">

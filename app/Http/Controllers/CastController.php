@@ -57,7 +57,7 @@ class CastController extends Controller
 
         $cast->save();
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.casts.index')
             ->with('success', 'Cast member "' . $cast->name . '" added successfully!');
     }
 
@@ -95,7 +95,7 @@ class CastController extends Controller
 
         $cast->save();
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.casts.index')
             ->with('success', 'Cast member "' . $cast->name . '" updated successfully!');
     }
 
@@ -115,7 +115,7 @@ class CastController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.casts.index')
             ->with('success', 'Cast member deleted successfully!');
     }
 }

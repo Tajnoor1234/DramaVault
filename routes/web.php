@@ -14,6 +14,7 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ChatbotController;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -40,6 +41,12 @@ Route::get('/casts/{cast}', [CastController::class, 'show'])->name('casts.show')
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
 Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
 
+// Privacy & Legal
+Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
+
+// Test & Debug Routes (Development Only)
+Route::view('/test-session-cookie', 'test-session-cookie')->name('test.session-cookie');
+
 // API Test Routes (Development Only)
 Route::prefix('api-test')->name('api-test.')->group(function () {
     Route::get('/omdb', [APITestController::class, 'testOMDb'])->name('omdb');
@@ -51,8 +58,18 @@ Route::prefix('api-test')->name('api-test.')->group(function () {
 // Authentication Routes
 Auth::routes();
 
+// Logout Route
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Admin Login Route (only accepts admin users)
+Route::post('/admin-login', [LoginController::class, 'adminLogin'])->name('admin.login');
+
 // Authenticated User Routes
 Route::middleware(['auth'])->group(function () {
+    // AI Chatbot
+    Route::post('/chatbot/chat', [ChatbotController::class, 'chat'])->name('chatbot.chat');
+    Route::get('/chatbot/suggestions', [ChatbotController::class, 'suggestions'])->name('chatbot.suggestions');
+    
     // User Profile
     Route::get('/profile', [UserController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [UserController::class, 'update'])->name('profile.update');
@@ -109,6 +126,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/dramas/{drama}', [DramaController::class, 'destroy'])->name('dramas.destroy');
     
     // Cast Management
+    Route::get('/casts', [AdminController::class, 'casts'])->name('casts.index');
     Route::get('/casts/create', [CastController::class, 'create'])->name('casts.create');
     Route::post('/casts', [CastController::class, 'store'])->name('casts.store');
     Route::get('/casts/{cast}/edit', [CastController::class, 'edit'])->name('casts.edit');

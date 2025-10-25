@@ -65,6 +65,23 @@
     <!-- Footer -->
     @include('partials.footer')
     
+    <!-- Cookie Consent -->
+    @include('partials.cookie-consent')
+    
+    <!-- Admin Login Floating Button (Only for logged out users) -->
+    @guest
+    <div class="position-fixed bottom-0 end-0 m-4" style="z-index: 1000;">
+        <button type="button" class="btn btn-dark rounded-circle shadow" 
+                onclick="showAdminLogin()"
+                data-bs-toggle="tooltip" 
+                data-bs-placement="left" 
+                title="Admin Login"
+                style="width: 50px; height: 50px;">
+            <i class="fas fa-lock"></i>
+        </button>
+    </div>
+    @endguest
+    
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -79,6 +96,45 @@
             easing: 'ease-in-out',
             once: true
         });
+        
+        // Session Management
+        (function() {
+            // Check session timeout (30 minutes of inactivity)
+            const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+            let lastActivity = Date.now();
+            
+            function updateActivity() {
+                lastActivity = Date.now();
+                sessionStorage.setItem('last_activity', lastActivity);
+            }
+            
+            function checkSession() {
+                @auth
+                const now = Date.now();
+                if (now - lastActivity > SESSION_TIMEOUT) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Session Expired',
+                        text: 'Your session has expired due to inactivity. Please log in again.',
+                        confirmButtonText: 'Log In'
+                    }).then(() => {
+                        window.location.href = '{{ route('login') }}';
+                    });
+                }
+                @endauth
+            }
+            
+            // Track user activity
+            ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(event => {
+                document.addEventListener(event, updateActivity, true);
+            });
+            
+            // Check session every minute
+            setInterval(checkSession, 60000);
+            
+            // Initialize last activity
+            updateActivity();
+        })();
         
         // Theme Toggle
         function toggleTheme() {
@@ -117,8 +173,84 @@
                     bsAlert.close();
                 });
             }, 5000);
+            
+            // Initialize tooltips
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
         });
+        
+        // Admin Login Modal
+        function showAdminLogin() {
+            Swal.fire({
+                title: '<i class="fas fa-shield-alt text-warning me-2"></i>Admin Login',
+                html: `
+                    <div class="text-start">
+                        <div class="alert alert-warning small">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            <strong>Administrators Only!</strong> Regular users cannot login here.
+                        </div>
+                        <form id="adminLoginForm">
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="adminEmail" placeholder="admin@example.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" id="adminPassword" required>
+                            </div>
+                        </form>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-sign-in-alt me-2"></i>Login as Admin',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#198754',
+                preConfirm: () => {
+                    const email = document.getElementById('adminEmail').value;
+                    const password = document.getElementById('adminPassword').value;
+                    
+                    if (!email || !password) {
+                        Swal.showValidationMessage('Please enter both email and password');
+                        return false;
+                    }
+                    
+                    return { email, password };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit admin login form
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route('admin.login') }}';
+                    
+                    const emailInput = document.createElement('input');
+                    emailInput.type = 'hidden';
+                    emailInput.name = 'email';
+                    emailInput.value = result.value.email;
+                    
+                    const passwordInput = document.createElement('input');
+                    passwordInput.type = 'hidden';
+                    passwordInput.name = 'password';
+                    passwordInput.value = result.value.password;
+                    
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '{{ csrf_token() }}';
+                    
+                    form.appendChild(emailInput);
+                    form.appendChild(passwordInput);
+                    form.appendChild(csrfToken);
+                    
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
     </script>
+    
+    <!-- AI Chatbot -->
+    @include('partials.chatbot')
     
     @stack('scripts')
 </body>

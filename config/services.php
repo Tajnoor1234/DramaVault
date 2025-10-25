@@ -52,4 +52,9 @@ return [
         'api_key' => env('NEWSDATA_API_KEY', ''),
     ],
 
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY', ''),
+        'endpoint' => env('GEMINI_ENDPOINT', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'),
+    ],
+
 ];

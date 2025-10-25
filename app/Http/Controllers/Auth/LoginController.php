@@ -56,14 +56,22 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        // Update last login time
-        $user->update(['last_login_at' => now()]);
+        // Update last login time and session info
+        $user->update([
+            'last_login_at' => now(),
+            'last_active_at' => now(),
+            'session_id' => session()->getId(),
+            'last_ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ]);
 
         // Set session data
         session([
             'user_id' => $user->id,
             'user_role' => $user->role,
-            'logged_in_at' => now()->toDateTimeString()
+            'logged_in_at' => now()->toDateTimeString(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent()
         ]);
 
         // Redirect based on role
@@ -89,5 +97,37 @@ class LoginController extends Controller
         Auth::logout();
 
         return redirect('/');
+    }
+    
+    /**
+     * Handle admin login - only allows admin users
+     */
+    public function adminLogin(Request $request)
+    {
+        $this->validateLogin($request);
+        $credentials = $request->only('email', 'password');
+        
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            if ($user->role !== 'admin') {
+                Auth::logout();
+                return redirect('/')->with('error', 'Access denied. Admin login only.');
+            }
+            $user->update([
+                'last_login_at' => now(),
+                'last_active_at' => now(),
+                'session_id' => session()->getId(),
+                'last_ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent()
+            ]);
+            session([
+                'user_id' => $user->id,
+                'user_role' => $user->role,
+                'logged_in_at' => now()->toDateTimeString(),
+            ]);
+            $request->session()->regenerate();
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect('/')->with('error', 'Invalid credentials.');
     }
 }

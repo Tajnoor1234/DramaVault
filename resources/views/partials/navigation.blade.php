@@ -136,20 +136,21 @@
                 @endauth
             </ul>
         </div>
-    </div>
-</nav>
+    </nav>
+</div>
 
-<!-- Floating Admin Lock Icon -->
-@php
-    $isAdmin = auth()->check() && auth()->user()->role === 'admin';
-@endphp
-<a href="{{ $isAdmin ? route('admin.dashboard') : route('login', ['redirect' => 'admin']) }}" 
-   class="floating-admin-btn btn btn-dark shadow-lg" 
-   title="{{ $isAdmin ? 'Admin Dashboard' : 'Admin Login' }}"
-   data-bs-toggle="tooltip"
-   data-bs-placement="left">
-    <i class="fas fa-lock"></i>
-</a>
+<!-- Floating Admin Access Button (Only for Admins) -->
+@auth
+    @if(auth()->user()->is_admin)
+    <a href="{{ route('admin.dashboard') }}" 
+       class="floating-admin-btn btn btn-dark shadow-lg" 
+       data-bs-toggle="tooltip" 
+       data-bs-placement="left" 
+       title="Admin Dashboard">
+        <i class="fas fa-lock"></i>
+    </a>
+    @endif
+@endauth
 
 <!-- Auth Required Modal -->
 <div class="modal fade" id="authRequiredModal" tabindex="-1" aria-labelledby="authRequiredModalLabel" aria-hidden="true">

@@ -11,6 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Add to web middleware group (runs after session middleware)
+        $middleware->web(append: [
+            \App\Http\Middleware\TrackUserActivity::class,
+        ]);
+        
         // Register middleware aliases
         $middleware->alias([
             'auth' => \App\Http\Middleware\Authenticate::class,
@@ -25,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'moderator' => \App\Http\Middleware\ModeratorMiddleware::class,
+            'track.activity' => \App\Http\Middleware\TrackUserActivity::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

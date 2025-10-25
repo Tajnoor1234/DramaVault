@@ -9,9 +9,14 @@
                     <h1 class="h3 mb-1">Edit Cast Member</h1>
                     <p class="text-muted">Update cast member details</p>
                 </div>
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
-                </a>
+                <div>
+                    <a href="{{ route('admin.casts.index') }}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left"></i> Back to Cast List
+                    </a>
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -95,7 +100,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Update Cast Member
                             </button>
-                            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+                            <a href="{{ route('admin.casts.index') }}" class="btn btn-secondary">
                                 Cancel
                             </a>
                         </div>

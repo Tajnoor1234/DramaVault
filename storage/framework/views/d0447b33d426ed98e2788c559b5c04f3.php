@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'Admin Dashboard - DramaVault')
 
-@section('content')
+<?php $__env->startSection('title', 'Admin Dashboard - DramaVault'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid py-4">
     <!-- Header -->
     <div class="row mb-4">
@@ -28,7 +28,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">Total Drama/Movies</h6>
-                            <h3 class="fw-bold mb-0">{{ $stats['total_dramas'] ?? 0 }}</h3>
+                            <h3 class="fw-bold mb-0"><?php echo e($stats['total_dramas'] ?? 0); ?></h3>
                         </div>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">Total Users</h6>
-                            <h3 class="fw-bold mb-0">{{ $stats['total_users'] ?? 0 }}</h3>
+                            <h3 class="fw-bold mb-0"><?php echo e($stats['total_users'] ?? 0); ?></h3>
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">Total Ratings</h6>
-                            <h3 class="fw-bold mb-0">{{ $stats['total_ratings'] ?? 0 }}</h3>
+                            <h3 class="fw-bold mb-0"><?php echo e($stats['total_ratings'] ?? 0); ?></h3>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">Total Comments</h6>
-                            <h3 class="fw-bold mb-0">{{ $stats['total_comments'] ?? 0 }}</h3>
+                            <h3 class="fw-bold mb-0"><?php echo e($stats['total_comments'] ?? 0); ?></h3>
                         </div>
                     </div>
                 </div>
@@ -101,13 +101,13 @@
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-primary">Recent Drama/Movies</h6>
                     <div>
-                        <a href="{{ route('admin.dramas.index') }}" class="btn btn-sm btn-outline-primary me-2">
+                        <a href="<?php echo e(route('admin.dramas.index')); ?>" class="btn btn-sm btn-outline-primary me-2">
                             <i class="fas fa-list me-1"></i>Show All
                         </a>
-                        <a href="{{ route('admin.import.index') }}" class="btn btn-sm btn-success me-2">
+                        <a href="<?php echo e(route('admin.import.index')); ?>" class="btn btn-sm btn-success me-2">
                             <i class="fas fa-cloud-download-alt me-1"></i>Import
                         </a>
-                        <a href="{{ route('admin.dramas.create') }}" class="btn btn-sm btn-primary">
+                        <a href="<?php echo e(route('admin.dramas.create')); ?>" class="btn btn-sm btn-primary">
                             <i class="fas fa-plus me-1"></i>Add New
                         </a>
                     </div>
@@ -124,35 +124,37 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($recentDramas as $drama)
+                                <?php $__currentLoopData = $recentDramas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $drama): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
                                     <td>
-                                        <a href="{{ route('dramas.show', $drama->slug) }}" class="text-decoration-none">
-                                            {{ Str::limit($drama->title, 30) }}
+                                        <a href="<?php echo e(route('dramas.show', $drama->slug)); ?>" class="text-decoration-none">
+                                            <?php echo e(Str::limit($drama->title, 30)); ?>
+
                                         </a>
                                     </td>
-                                    <td><span class="badge bg-secondary">{{ ucfirst($drama->type) }}</span></td>
+                                    <td><span class="badge bg-secondary"><?php echo e(ucfirst($drama->type)); ?></span></td>
                                     <td>
                                         <span class="text-warning">
-                                            <i class="fas fa-star me-1"></i>{{ $drama->avg_rating }}
+                                            <i class="fas fa-star me-1"></i><?php echo e($drama->avg_rating); ?>
+
                                         </span>
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <a href="{{ route('admin.dramas.edit', $drama) }}" 
+                                            <a href="<?php echo e(route('admin.dramas.edit', $drama)); ?>" 
                                                class="btn btn-outline-primary" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <button type="button" class="btn btn-outline-danger delete-drama" 
-                                                    data-id="{{ $drama->id }}" 
-                                                    data-title="{{ $drama->title }}" 
+                                                    data-id="<?php echo e($drama->id); ?>" 
+                                                    data-title="<?php echo e($drama->title); ?>" 
                                                     title="Delete">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
@@ -169,28 +171,28 @@
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <a href="{{ route('admin.dramas.create') }}" class="btn btn-primary w-100 h-100 py-3 text-start">
+                            <a href="<?php echo e(route('admin.dramas.create')); ?>" class="btn btn-primary w-100 h-100 py-3 text-start">
                                 <i class="fas fa-plus-circle fa-2x mb-2"></i>
                                 <h6>Add New Drama/Movie</h6>
                                 <small class="text-white-50">Create a new drama/movie entry</small>
                             </a>
                         </div>
                         <div class="col-md-6">
-                            <a href="{{ route('admin.casts.index') }}" class="btn btn-success w-100 h-100 py-3 text-start">
+                            <a href="<?php echo e(route('admin.casts.index')); ?>" class="btn btn-success w-100 h-100 py-3 text-start">
                                 <i class="fas fa-users fa-2x mb-2"></i>
                                 <h6>Manage Cast Members</h6>
                                 <small class="text-white-50">View, edit, or add cast members</small>
                             </a>
                         </div>
                         <div class="col-md-6">
-                            <a href="{{ route('admin.news.index') }}" class="btn btn-info w-100 h-100 py-3 text-start">
+                            <a href="<?php echo e(route('admin.news.index')); ?>" class="btn btn-info w-100 h-100 py-3 text-start">
                                 <i class="fas fa-newspaper fa-2x mb-2"></i>
                                 <h6>Manage News</h6>
                                 <small class="text-white-50">View, create, or import news</small>
                             </a>
                         </div>
                         <div class="col-md-6">
-                            <a href="{{ route('admin.users.index') }}" class="btn btn-warning w-100 h-100 py-3 text-start">
+                            <a href="<?php echo e(route('admin.users.index')); ?>" class="btn btn-warning w-100 h-100 py-3 text-start">
                                 <i class="fas fa-users-cog fa-2x mb-2"></i>
                                 <h6>Manage Users</h6>
                                 <small class="text-white-50">View and manage all users</small>
@@ -221,7 +223,7 @@
             <div class="card shadow h-100 animate__animated animate__fadeInUp">
                 <div class="card-header bg-light d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-primary">Contents Types Distribution</h6>
-                    <span class="badge bg-primary">{{ $stats['total_dramas'] ?? 0 }} Total</span>
+                    <span class="badge bg-primary"><?php echo e($stats['total_dramas'] ?? 0); ?> Total</span>
                 </div>
                 <div class="card-body" style="height: 300px;">
                     <canvas id="dramaTypesChart"></canvas>
@@ -230,9 +232,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Ratings Chart with Real Data
@@ -240,17 +242,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const ratingsChart = new Chart(ratingsCtx, {
         type: 'line',
         data: {
-            labels: {!! json_encode($ratingsLabels) !!},
+            labels: <?php echo json_encode($ratingsLabels); ?>,
             datasets: [{
                 label: 'Ratings Given',
-                data: {!! json_encode($ratingsData) !!},
+                data: <?php echo json_encode($ratingsData); ?>,
                 borderColor: '#4e73df',
                 backgroundColor: 'rgba(78, 115, 223, 0.1)',
                 tension: 0.4,
                 fill: true
             }, {
                 label: 'New Users',
-                data: {!! json_encode($usersData) !!},
+                data: <?php echo json_encode($usersData); ?>,
                 borderColor: '#1cc88a',
                 backgroundColor: 'rgba(28, 200, 138, 0.1)',
                 tension: 0.4,
@@ -283,9 +285,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Drama Types Chart with Real Data
     const typesCtx = document.getElementById('dramaTypesChart').getContext('2d');
-    const dramaCount = {{ $stats['drama_count'] ?? 0 }};
-    const movieCount = {{ $stats['movie_count'] ?? 0 }};
-    const seriesCount = {{ $stats['series_count'] ?? 0 }};
+    const dramaCount = <?php echo e($stats['drama_count'] ?? 0); ?>;
+    const movieCount = <?php echo e($stats['movie_count'] ?? 0); ?>;
+    const seriesCount = <?php echo e($stats['series_count'] ?? 0); ?>;
     const totalCount = dramaCount + movieCount + seriesCount;
 
     const typesChart = new Chart(typesCtx, {
@@ -350,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     fetch(`/admin/dramas/${dramaId}`, {
                         method: 'DELETE',
                         headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>',
                             'Accept': 'application/json',
                             'Content-Type': 'application/json'
                         }
@@ -382,4 +384,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH E:\XAMPP\htdocs\DramaVault\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>
