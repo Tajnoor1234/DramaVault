@@ -1,0 +1,1 @@
+<?php /**PATH E:\XAMPP\htdocs\DramaVault\resources\views/partials/footer.blade.php ENDPATH**/ ?>

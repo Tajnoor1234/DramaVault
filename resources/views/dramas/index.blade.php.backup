@@ -1,0 +1,188 @@
+@extends('layouts.app')
+
+@section('title', 'Browse Dramas - DramaVault')
+
+@section('content')
+<div class="container py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold mb-3">Browse Dramas</h1>
+            <p class="lead text-muted">Discover your next favorite drama from our collection</p>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form action="{{ route('dramas.index') }}" method="GET" class="row g-3">
+                        <!-- Search -->
+                        <div class="col-md-4">
+                            <label class="form-label">Search</label>
+                            <input type="text" name="search" class="form-control" 
+                                   placeholder="Search dramas..." 
+                                   value="{{ request('search') }}">
+                        </div>
+
+                        <!-- Genre Filter -->
+                        <div class="col-md-2">
+                            <label class="form-label">Genre</label>
+                            <select name="genre" class="form-select">
+                                <option value="">All Genres</option>
+                                @foreach($genres as $genre)
+                                <option value="{{ $genre->slug }}" {{ request('genre') == $genre->slug ? 'selected' : '' }}>
+                                    {{ $genre->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Type Filter -->
+                        <div class="col-md-2">
+                            <label class="form-label">Type</label>
+                            <select name="type" class="form-select">
+                                <option value="">All Types</option>
+                                <option value="series" {{ request('type') == 'series' ? 'selected' : '' }}>Series</option>
+                                <option value="movie" {{ request('type') == 'movie' ? 'selected' : '' }}>Movie</option>
+                            </select>
+                        </div>
+
+                        <!-- Country Filter -->
+                        <div class="col-md-2">
+                            <label class="form-label">Country</label>
+                            <select name="country" class="form-select">
+                                <option value="">All Countries</option>
+                                <option value="South Korea" {{ request('country') == 'South Korea' ? 'selected' : '' }}>South Korea</option>
+                                <option value="Japan" {{ request('country') == 'Japan' ? 'selected' : '' }}>Japan</option>
+                                <option value="China" {{ request('country') == 'China' ? 'selected' : '' }}>China</option>
+                                <option value="Thailand" {{ request('country') == 'Thailand' ? 'selected' : '' }}>Thailand</option>
+                            </select>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="col-md-2 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-primary flex-fill">
+                                <i class="fas fa-search me-1"></i>Filter
+                            </button>
+                            <a href="{{ route('dramas.index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-redo"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <p class="text-muted">
+                Showing {{ $dramas->firstItem() ?? 0 }} - {{ $dramas->lastItem() ?? 0 }} of {{ $dramas->total() }} dramas
+            </p>
+        </div>
+    </div>
+
+    <!-- Dramas Grid -->
+    <div class="row g-4 mb-4">
+        @forelse($dramas as $drama)
+        <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+            <a href="{{ route('dramas.show', $drama->slug) }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm hover-lift h-100">
+                    <div class="position-relative">
+                        <img src="{{ $drama->getPosterUrl() }}" 
+                             class="card-img-top" 
+                             alt="{{ $drama->title }}"
+                             style="height: 280px; object-fit: cover;">
+                        
+                        @if($drama->is_featured)
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-crown me-1"></i>Featured
+                            </span>
+                        </div>
+                        @endif
+                        
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2" 
+                             style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-warning fw-bold">
+                                    <i class="fas fa-star me-1"></i>{{ $drama->rating }}
+                                </small>
+                                <small class="text-white">{{ $drama->release_year }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-2">
+                        <h6 class="card-title small fw-bold text-dark mb-1 text-truncate">
+                            {{ $drama->title }}
+                        </h6>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ ucfirst($drama->type) }}</small>
+                            <small class="text-muted">{{ $drama->episodes }} eps</small>
+                        </div>
+                        <div class="mt-1">
+                            @foreach($drama->genres->take(2) as $genre)
+                            <span class="badge bg-primary bg-opacity-10 text-primary" style="font-size: 0.7rem;">
+                                {{ $genre->name }}
+                            </span>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        @empty
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-film fa-4x text-muted mb-3"></i>
+                <h4>No dramas found</h4>
+                <p class="text-muted">Try adjusting your filters or search terms</p>
+                <a href="{{ route('dramas.index') }}" class="btn btn-primary">
+                    <i class="fas fa-redo me-2"></i>Reset Filters
+                </a>
+            </div>
+        </div>
+        @endforelse
+    </div>
+
+    <!-- Pagination -->
+    @if($dramas->hasPages())
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-center">
+                {{ $dramas->links() }}
+            </div>
+        </div>
+    </div>
+    @endif
+</div>
+@endsection
+
+@push('styles')
+<style>
+.hover-lift {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+}
+
+.card-img-top {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.card {
+    overflow: hidden;
+}
+</style>
+@endpush

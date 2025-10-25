@@ -1,9 +1,10 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRatingsTable extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -14,7 +15,7 @@ class CreateRatingsTable extends Migration
             $table->integer('rating')->unsigned(); // 1-10
             $table->text('review')->nullable();
             $table->timestamps();
-            
+
             $table->unique(['user_id', 'drama_id']);
         });
     }
@@ -23,4 +24,4 @@ class CreateRatingsTable extends Migration
     {
         Schema::dropIfExists('ratings');
     }
-}
+};

@@ -35,4 +35,21 @@ return [
         ],
     ],
 
+    'omdb' => [
+        'api_key' => env('OMDB_API_KEY', ''),
+    ],
+
+    'trakt' => [
+        'client_id' => env('TRAKT_CLIENT_ID', ''),
+        'client_secret' => env('TRAKT_CLIENT_SECRET', ''),
+    ],
+
+    'newsapi' => [
+        'api_key' => env('NEWSAPI_KEY', ''),
+    ],
+
+    'newsdata' => [
+        'api_key' => env('NEWSDATA_API_KEY', ''),
+    ],
+
 ];

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +15,7 @@ class Rating extends Model
         'rating' => 'integer',
     ];
 
+    // Relationships
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -22,5 +24,17 @@ class Rating extends Model
     public function drama()
     {
         return $this->belongsTo(Drama::class);
+    }
+
+    // Events
+    protected static function booted()
+    {
+        static::saved(function ($rating) {
+            $rating->drama->updateRatingStats();
+        });
+
+        static::deleted(function ($rating) {
+            $rating->drama->updateRatingStats();
+        });
     }
 }

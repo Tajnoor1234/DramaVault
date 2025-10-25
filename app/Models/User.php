@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -6,20 +7,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
-        'avatar',
+        'avatar_path',
         'bio',
-        'theme',
-        'is_admin',
-        'is_moderator',
+        'theme_preference',
+        'role',
+        'is_active',
+        'is_verified',
         'preferences',
+        'last_login_at',
     ];
 
     protected $hidden = [
@@ -29,9 +33,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_login_at' => 'datetime',
         'preferences' => 'array',
-        'is_admin' => 'boolean',
-        'is_moderator' => 'boolean',
+        'is_active' => 'boolean',
+        'is_verified' => 'boolean',
     ];
 
     // Relationships
@@ -52,39 +57,47 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function followers()
     {
-        return $this->hasMany(Follow::class, 'following_id');
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id');
     }
 
     public function following()
     {
-        return $this->hasMany(Follow::class, 'follower_id');
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id');
     }
 
     public function news()
     {
-        return $this->hasMany(News::class);
+        return $this->hasMany(News::class, 'author_id');
     }
 
-    // Helpers
-    public function isFollowing(User $user)
+    // Methods
+    public function isAdmin()
     {
-        return $this->following()->where('following_id', $user->id)->exists();
+        return $this->role === 'admin';
     }
 
-    public function hasRated(Drama $drama)
+    public function isModerator()
     {
-        return $this->ratings()->where('drama_id', $drama->id)->exists();
+        return $this->role === 'moderator' || $this->role === 'admin';
     }
 
-    public function getRatingForDrama(Drama $drama)
+    public function getAvatarUrlAttribute()
     {
-        $rating = $this->ratings()->where('drama_id', $drama->id)->first();
-        return $rating ? $rating->rating : null;
+        return $this->avatar_path ? asset('storage/' . $this->avatar_path) : asset('images/default-avatar.png');
     }
 
-    public function getWatchlistStatus(Drama $drama)
+    public function getAvatarAttribute()
     {
-        $watchlist = $this->watchlists()->where('drama_id', $drama->id)->first();
-        return $watchlist ? $watchlist->status : null;
+        return $this->avatar_url;
+    }
+
+    public function hasRated($dramaId)
+    {
+        return $this->ratings()->where('drama_id', $dramaId)->exists();
+    }
+
+    public function isFollowing($userId)
+    {
+        return $this->following()->where('following_id', $userId)->exists();
     }
 }

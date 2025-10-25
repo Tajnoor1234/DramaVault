@@ -1,0 +1,258 @@
+@extends('layouts.admin')
+
+@section('page-title', 'Dashboard')
+@section('page-subtitle', 'Overview of your platform')
+
+@section('content')
+<div class="row g-4 mb-4">
+    <!-- Statistics Cards -->
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card card shadow-sm">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                    <div class="stat-icon bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-film fa-2x text-primary"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6 class="text-muted mb-1">Total Dramas</h6>
+                    <h3 class="fw-bold mb-0">{{ $totalDramas }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card card shadow-sm">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                    <div class="stat-icon bg-success bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-users fa-2x text-success"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6 class="text-muted mb-1">Total Users</h6>
+                    <h3 class="fw-bold mb-0">{{ $totalUsers }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card card shadow-sm">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                    <div class="stat-icon bg-warning bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-star fa-2x text-warning"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6 class="text-muted mb-1">Total Ratings</h6>
+                    <h3 class="fw-bold mb-0">{{ $totalRatings }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card card shadow-sm">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                    <div class="stat-icon bg-info bg-opacity-10 p-3 rounded">
+                        <i class="fas fa-comments fa-2x text-info"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6 class="text-muted mb-1">Total Comments</h6>
+                    <h3 class="fw-bold mb-0">{{ $totalComments }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Dramas by Type Chart -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-chart-bar text-primary me-2"></i>
+                    Dramas by Type
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="dramaTypeChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent News -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-newspaper text-success me-2"></i>
+                    Recent News
+                </h5>
+            </div>
+            <div class="card-body">
+                @forelse($latestNews as $news)
+                <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                    <img src="{{ $news->getImageUrl() }}" alt="{{ $news->title }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1 small">{{ Str::limit($news->title, 40) }}</h6>
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            {{ $news->published_at->diffForHumans() }}
+                        </small>
+                    </div>
+                </div>
+                @empty
+                <p class="text-muted text-center py-4">No news articles yet.</p>
+                @endforelse
+                
+                <a href="{{ route('admin.news.index') }}" class="btn btn-outline-primary btn-sm w-100 mt-2">
+                    View All News
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <!-- Rating Distribution -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-star text-warning me-2"></i>
+                    Rating Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="ratingChart" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-bolt text-danger me-2"></i>
+                    Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <a href="{{ route('admin.dramas.create') }}" class="btn btn-outline-primary w-100 py-3">
+                            <i class="fas fa-plus-circle fa-2x mb-2 d-block"></i>
+                            Add New Drama
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{{ route('admin.cast.create') }}" class="btn btn-outline-success w-100 py-3">
+                            <i class="fas fa-user-plus fa-2x mb-2 d-block"></i>
+                            Add Cast Member
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{{ route('admin.news.create') }}" class="btn btn-outline-info w-100 py-3">
+                            <i class="fas fa-newspaper fa-2x mb-2 d-block"></i>
+                            Write News Article
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{{ route('admin.genres') }}" class="btn btn-outline-warning w-100 py-3">
+                            <i class="fas fa-tags fa-2x mb-2 d-block"></i>
+                            Manage Genres
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// Dramas by Type Chart
+const dramaTypeCtx = document.getElementById('dramaTypeChart').getContext('2d');
+new Chart(dramaTypeCtx, {
+    type: 'bar',
+    data: {
+        labels: {!! json_encode($dramasByType->pluck('type')) !!},
+        datasets: [{
+            label: 'Number of Dramas',
+            data: {!! json_encode($dramasByType->pluck('count')) !!},
+            backgroundColor: [
+                'rgba(102, 126, 234, 0.8)',
+                'rgba(118, 75, 162, 0.8)',
+                'rgba(237, 100, 166, 0.8)',
+                'rgba(255, 154, 158, 0.8)'
+            ],
+            borderColor: [
+                'rgb(102, 126, 234)',
+                'rgb(118, 75, 162)',
+                'rgb(237, 100, 166)',
+                'rgb(255, 154, 158)'
+            ],
+            borderWidth: 2,
+            borderRadius: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// Rating Distribution Chart
+const ratingCtx = document.getElementById('ratingChart').getContext('2d');
+new Chart(ratingCtx, {
+    type: 'doughnut',
+    data: {
+        labels: {!! json_encode($ratingsDistribution->pluck('rating')) !!},
+        datasets: [{
+            data: {!! json_encode($ratingsDistribution->pluck('count')) !!},
+            backgroundColor: [
+                'rgba(220, 53, 69, 0.8)',
+                'rgba(255, 193, 7, 0.8)',
+                'rgba(255, 193, 7, 0.9)',
+                'rgba(40, 167, 69, 0.9)',
+                'rgba(40, 167, 69, 1)'
+            ],
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                position: 'right'
+            }
+        }
+    }
+});
+</script>
+@endpush

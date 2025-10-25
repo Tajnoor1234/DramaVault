@@ -1,9 +1,10 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFollowsTable extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -12,7 +13,7 @@ class CreateFollowsTable extends Migration
             $table->foreignId('follower_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('following_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-            
+
             $table->unique(['follower_id', 'following_id']);
         });
     }
@@ -21,4 +22,4 @@ class CreateFollowsTable extends Migration
     {
         Schema::dropIfExists('follows');
     }
-}
+};
