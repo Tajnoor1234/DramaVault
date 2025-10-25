@@ -57,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [UserController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [UserController::class, 'update'])->name('profile.update');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     
     // Follow System
     Route::post('/users/{user}/follow', [UserController::class, 'follow'])->name('users.follow');
@@ -78,6 +79,7 @@ Route::middleware(['auth'])->group(function () {
     // Watchlist
     Route::get('/watchlist', [WatchlistController::class, 'index'])->name('watchlist.index');
     Route::post('/dramas/{drama}/watchlist', [WatchlistController::class, 'store'])->name('watchlist.store');
+    Route::delete('/dramas/{drama}/watchlist', [WatchlistController::class, 'removeByDrama'])->name('watchlist.remove');
     Route::put('/watchlist/{watchlist}', [WatchlistController::class, 'update'])->name('watchlist.update');
     Route::delete('/watchlist/{watchlist}', [WatchlistController::class, 'destroy'])->name('watchlist.destroy');
 });

@@ -47,11 +47,6 @@
                                 <i class="fas fa-bookmark me-2"></i>Watchlist
                             </a>
                         </li>
-                        <li>
-                            <a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>">
-                                <i class="fas fa-cog me-2"></i>Settings
-                            </a>
-                        </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <h6 class="dropdown-header">Activity</h6>
@@ -64,11 +59,6 @@
                         <li>
                             <a class="dropdown-item" href="<?php echo e(route('users.show', auth()->user())); ?>#reviews">
                                 <i class="fas fa-star me-2"></i>My Reviews
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="<?php echo e(route('users.show', auth()->user())); ?>#follows">
-                                <i class="fas fa-user-friends me-2"></i>Following
                             </a>
                         </li>
                     </ul>

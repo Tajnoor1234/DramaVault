@@ -104,11 +104,20 @@
 <style>
 .watchlist-card {
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .watchlist-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.watchlist-card a {
+    color: inherit;
+}
+
+.watchlist-card a:hover {
+    color: inherit;
 }
 
 .progress {
@@ -125,4 +134,84 @@
     font-weight: 600;
 }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle watchlist status change forms
+    document.querySelectorAll('.watchlist-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const statusInput = this.querySelector('input[name="status"]');
+            const statusName = statusInput ? statusInput.value.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : '';
+            
+            // Show loading
+            Swal.fire({
+                title: 'Updating...',
+                text: 'Changing status to ' + statusName,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Submit the form
+            this.submit();
+        });
+    });
+    
+    // Handle watchlist delete forms
+    document.querySelectorAll('.watchlist-delete-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            Swal.fire({
+                title: 'Remove from Watchlist?',
+                text: "This drama will be removed from your watchlist.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, remove it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Removing...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    this.submit();
+                }
+            });
+        });
+    });
+    
+    // Show success message if present
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+    
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: '{{ session('error') }}',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+});
+</script>
 @endpush

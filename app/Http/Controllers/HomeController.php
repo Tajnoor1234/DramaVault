@@ -12,9 +12,24 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $featuredDramas = Drama::with(['genres', 'ratings'])
-            ->where('is_featured', true)
-            ->latest()
+        // Fetch latest added/imported dramas, series, and movies
+        $latestDramas = Drama::with(['genres', 'ratings'])
+            ->latest('created_at')
+            ->limit(12)
+            ->get();
+
+        // Fetch trending dramas (most viewed)
+        $trendingDramas = Drama::with(['genres', 'ratings'])
+            ->orderBy('total_views', 'desc')
+            ->orderBy('avg_rating', 'desc')
+            ->limit(8)
+            ->get();
+
+        // Fetch top rated dramas
+        $topRatedDramas = Drama::with(['genres', 'ratings'])
+            ->where('avg_rating', '>', 0)
+            ->orderBy('avg_rating', 'desc')
+            ->orderBy('total_ratings', 'desc')
             ->limit(8)
             ->get();
 
@@ -30,6 +45,15 @@ class HomeController extends Controller
         $totalRatings = Rating::count();
         $totalComments = Comment::count();
 
-        return view('home', compact('featuredDramas', 'latestNews', 'totalDramas', 'totalUsers', 'totalRatings', 'totalComments'));
+        return view('home', compact(
+            'latestDramas', 
+            'trendingDramas', 
+            'topRatedDramas',
+            'latestNews', 
+            'totalDramas', 
+            'totalUsers', 
+            'totalRatings', 
+            'totalComments'
+        ));
     }
 }

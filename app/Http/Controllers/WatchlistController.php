@@ -15,12 +15,21 @@ class WatchlistController extends Controller
 
     public function index()
     {
-        $watchlists = Watchlist::with('drama')
+        $watchlists = Watchlist::with(['drama.genres'])
             ->where('user_id', auth()->id())
-            ->get()
-            ->groupBy('status');
+            ->latest()
+            ->get();
 
-        return view('watchlist.index', compact('watchlists'));
+        // Group by status
+        $statuses = [
+            'watching' => $watchlists->where('status', 'watching'),
+            'completed' => $watchlists->where('status', 'completed'),
+            'plan_to_watch' => $watchlists->where('status', 'plan_to_watch'),
+            'on_hold' => $watchlists->where('status', 'on_hold'),
+            'dropped' => $watchlists->where('status', 'dropped'),
+        ];
+
+        return view('users.watchlist', compact('statuses'));
     }
 
     public function store(Request $request, Drama $drama)
@@ -80,5 +89,28 @@ class WatchlistController extends Controller
         }
 
         return back()->with('success', 'Removed from watchlist!');
+    }
+
+    public function removeByDrama(Drama $drama)
+    {
+        $watchlist = Watchlist::where('user_id', auth()->id())
+            ->where('drama_id', $drama->id)
+            ->first();
+
+        if ($watchlist) {
+            $watchlist->delete();
+            
+            if (request()->expectsJson()) {
+                return response()->json(['success' => true, 'message' => 'Removed from watchlist!']);
+            }
+
+            return back()->with('success', 'Removed from watchlist!');
+        }
+
+        if (request()->expectsJson()) {
+            return response()->json(['success' => false, 'message' => 'Drama not in watchlist'], 404);
+        }
+
+        return back()->with('error', 'Drama not in watchlist');
     }
 }

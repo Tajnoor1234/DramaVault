@@ -127,7 +127,7 @@
                                 <i class="fas fa-sync me-1"></i>Update
                             </button>
                             <button type="button" class="btn btn-outline-danger" 
-                                    onclick="confirmRemoveWatchlist({{ $drama->id }})">
+                                    onclick="confirmRemoveWatchlist('{{ $drama->slug }}')">
                                 <i class="fas fa-times me-1"></i>Remove
                             </button>
                             @else
@@ -474,7 +474,7 @@ function confirmDeleteRating(ratingId) {
     });
 }
 
-function confirmRemoveWatchlist(dramaId) {
+function confirmRemoveWatchlist(dramaSlug) {
     Swal.fire({
         title: 'Remove from Watchlist?',
         text: "This drama will be removed from your watchlist.",
@@ -486,7 +486,7 @@ function confirmRemoveWatchlist(dramaId) {
     }).then((result) => {
         if (result.isConfirmed) {
             const form = document.getElementById('remove-watchlist-form');
-            form.action = `/dramas/${dramaId}/watchlist`;
+            form.action = `/dramas/${dramaSlug}/watchlist`;
             form.submit();
         }
     });
@@ -684,6 +684,56 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error:', error));
         });
     });
+    
+    // Watchlist form submission with AJAX
+    @auth
+    const watchlistForm = document.querySelector('.watchlist-form');
+    if (watchlistForm) {
+        watchlistForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Updating...';
+            
+            fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: data.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to update watchlist'
+                });
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            });
+        });
+    }
+    @endauth
 });
 </script>
 @endpush
