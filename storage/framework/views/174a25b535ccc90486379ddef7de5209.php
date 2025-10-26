@@ -106,11 +106,6 @@
                                 <i class="fas fa-user me-2"></i>View Profile
                             </a>
                         </li>
-                        <li>
-                            <a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>">
-                                <i class="fas fa-cog me-2"></i>Settings
-                            </a>
-                        </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form method="POST" action="<?php echo e(route('logout')); ?>">
