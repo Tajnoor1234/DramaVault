@@ -87,8 +87,8 @@
                 
                 <!-- Theme Toggle -->
                 <li class="nav-item me-2">
-                    <button class="btn btn-outline-light btn-sm" onclick="toggleTheme()">
-                        <i id="themeIcon" class="fas {{ (auth()->check() && auth()->user()->theme_preference === 'dark') ? 'fa-sun' : 'fa-moon' }}"></i>
+                    <button class="btn btn-outline-light btn-sm" onclick="toggleTheme()" title="Toggle Dark Mode">
+                        <i id="themeIcon" class="fas fa-moon"></i>
                     </button>
                 </li>
                 

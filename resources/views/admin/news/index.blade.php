@@ -118,8 +118,41 @@
                             </table>
                         </div>
 
-                        <div class="mt-3">
-                            {{ $news->links() }}
+                        <div class="mt-3 d-flex justify-content-center">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm">
+                                    {{-- Previous Page Link --}}
+                                    @if ($news->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link">Previous</span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $news->previousPageUrl() }}" rel="prev">Previous</a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Pagination Elements --}}
+                                    @foreach(range(1, $news->lastPage()) as $page)
+                                        @if ($page == $news->currentPage())
+                                            <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
+                                        @else
+                                            <li class="page-item"><a class="page-link" href="{{ $news->url($page) }}">{{ $page }}</a></li>
+                                        @endif
+                                    @endforeach
+
+                                    {{-- Next Page Link --}}
+                                    @if ($news->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $news->nextPageUrl() }}" rel="next">Next</a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link">Next</span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
                         </div>
                     @else
                         <div class="alert alert-info">

@@ -19,6 +19,18 @@ class TrackUserActivity
         // Track last activity time for authenticated users
         if (Auth::check()) {
             $user = Auth::user();
+            
+            // Check if user is banned/inactive
+            if (!$user->is_active) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Your account has been suspended. Please contact support.'
+                ]);
+            }
+            
             $user->last_active_at = now();
             $user->save();
         }

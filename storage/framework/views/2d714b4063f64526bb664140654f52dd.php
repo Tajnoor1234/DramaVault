@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'Manage Drama/Movies - DramaVault')
 
-@section('content')
+<?php $__env->startSection('title', 'Manage Drama/Movies - DramaVault'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid px-4 py-4">
     <!-- Header -->
     <div class="row mb-4">
@@ -15,13 +15,13 @@
                     <p class="text-muted">View, edit, and delete all drama/movie entries</p>
                 </div>
                 <div>
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary me-2">
+                    <a href="<?php echo e(route('admin.dashboard')); ?>" class="btn btn-secondary me-2">
                         <i class="fas fa-arrow-left"></i> Back to Dashboard
                     </a>
-                    <a href="{{ route('admin.import.index') }}" class="btn btn-success me-2">
+                    <a href="<?php echo e(route('admin.import.index')); ?>" class="btn btn-success me-2">
                         <i class="fas fa-cloud-download-alt"></i> Import
                     </a>
-                    <a href="{{ route('admin.dramas.create') }}" class="btn btn-primary">
+                    <a href="<?php echo e(route('admin.dramas.create')); ?>" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Add New
                     </a>
                 </div>
@@ -32,34 +32,34 @@
     <!-- Filters -->
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <form method="GET" action="{{ route('admin.dramas.index') }}" class="row g-3">
+            <form method="GET" action="<?php echo e(route('admin.dramas.index')); ?>" class="row g-3">
                 <div class="col-md-4">
                     <input type="text" name="search" class="form-control" 
-                           placeholder="Search by title..." value="{{ request('search') }}">
+                           placeholder="Search by title..." value="<?php echo e(request('search')); ?>">
                 </div>
                 <div class="col-md-2">
                     <select name="type" class="form-select">
                         <option value="">All Types</option>
-                        <option value="drama" {{ request('type') == 'drama' ? 'selected' : '' }}>Drama</option>
-                        <option value="movie" {{ request('type') == 'movie' ? 'selected' : '' }}>Movie</option>
-                        <option value="series" {{ request('type') == 'series' ? 'selected' : '' }}>Series</option>
+                        <option value="drama" <?php echo e(request('type') == 'drama' ? 'selected' : ''); ?>>Drama</option>
+                        <option value="movie" <?php echo e(request('type') == 'movie' ? 'selected' : ''); ?>>Movie</option>
+                        <option value="series" <?php echo e(request('type') == 'series' ? 'selected' : ''); ?>>Series</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <select name="status" class="form-select">
                         <option value="">All Status</option>
-                        <option value="upcoming" {{ request('status') == 'upcoming' ? 'selected' : '' }}>Upcoming</option>
-                        <option value="ongoing" {{ request('status') == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
-                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="upcoming" <?php echo e(request('status') == 'upcoming' ? 'selected' : ''); ?>>Upcoming</option>
+                        <option value="ongoing" <?php echo e(request('status') == 'ongoing' ? 'selected' : ''); ?>>Ongoing</option>
+                        <option value="completed" <?php echo e(request('status') == 'completed' ? 'selected' : ''); ?>>Completed</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <select name="sort" class="form-select">
-                        <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
-                        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
-                        <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Title A-Z</option>
-                        <option value="rating" {{ request('sort') == 'rating' ? 'selected' : '' }}>Rating</option>
-                        <option value="views" {{ request('sort') == 'views' ? 'selected' : '' }}>Views</option>
+                        <option value="latest" <?php echo e(request('sort') == 'latest' ? 'selected' : ''); ?>>Latest</option>
+                        <option value="oldest" <?php echo e(request('sort') == 'oldest' ? 'selected' : ''); ?>>Oldest</option>
+                        <option value="title" <?php echo e(request('sort') == 'title' ? 'selected' : ''); ?>>Title A-Z</option>
+                        <option value="rating" <?php echo e(request('sort') == 'rating' ? 'selected' : ''); ?>>Rating</option>
+                        <option value="views" <?php echo e(request('sort') == 'views' ? 'selected' : ''); ?>>Views</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -75,9 +75,9 @@
     <div class="card shadow-sm">
         <div class="card-header bg-light d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">
-                All Drama/Movies ({{ $dramas->total() }})
+                All Drama/Movies (<?php echo e($dramas->total()); ?>)
             </h6>
-            <span class="badge bg-primary">Page {{ $dramas->currentPage() }} of {{ $dramas->lastPage() }}</span>
+            <span class="badge bg-primary">Page <?php echo e($dramas->currentPage()); ?> of <?php echo e($dramas->lastPage()); ?></span>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -95,121 +95,126 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($dramas as $drama)
+                        <?php $__empty_1 = true; $__currentLoopData = $dramas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $drama): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
                             <td>
-                                <img src="{{ $drama->poster_url }}" alt="{{ $drama->title }}" 
+                                <img src="<?php echo e($drama->poster_url); ?>" alt="<?php echo e($drama->title); ?>" 
                                      class="rounded" style="width: 40px; height: 60px; object-fit: cover;">
                             </td>
                             <td>
-                                <a href="{{ route('dramas.show', $drama->slug) }}" 
+                                <a href="<?php echo e(route('dramas.show', $drama->slug)); ?>" 
                                    class="text-decoration-none text-dark fw-semibold" target="_blank">
-                                    {{ Str::limit($drama->title, 40) }}
+                                    <?php echo e(Str::limit($drama->title, 40)); ?>
+
                                 </a>
                                 <br>
-                                <small class="text-muted">{{ $drama->episodes }} episodes</small>
+                                <small class="text-muted"><?php echo e($drama->episodes); ?> episodes</small>
                             </td>
                             <td>
-                                <span class="badge bg-{{ $drama->type == 'movie' ? 'info' : ($drama->type == 'series' ? 'success' : 'secondary') }}">
-                                    {{ ucfirst($drama->type) }}
+                                <span class="badge bg-<?php echo e($drama->type == 'movie' ? 'info' : ($drama->type == 'series' ? 'success' : 'secondary')); ?>">
+                                    <?php echo e(ucfirst($drama->type)); ?>
+
                                 </span>
                             </td>
                             <td>
-                                <span class="badge bg-{{ $drama->status == 'completed' ? 'success' : ($drama->status == 'ongoing' ? 'primary' : 'warning') }}">
-                                    {{ ucfirst($drama->status) }}
+                                <span class="badge bg-<?php echo e($drama->status == 'completed' ? 'success' : ($drama->status == 'ongoing' ? 'primary' : 'warning')); ?>">
+                                    <?php echo e(ucfirst($drama->status)); ?>
+
                                 </span>
                             </td>
-                            <td>{{ $drama->release_year }}</td>
+                            <td><?php echo e($drama->release_year); ?></td>
                             <td>
                                 <span class="text-warning">
-                                    <i class="fas fa-star"></i> {{ number_format($drama->avg_rating, 1) }}
+                                    <i class="fas fa-star"></i> <?php echo e(number_format($drama->avg_rating, 1)); ?>
+
                                 </span>
                                 <br>
-                                <small class="text-muted">({{ $drama->total_ratings }})</small>
+                                <small class="text-muted">(<?php echo e($drama->total_ratings); ?>)</small>
                             </td>
                             <td>
-                                <i class="fas fa-eye text-muted"></i> {{ number_format($drama->total_views) }}
+                                <i class="fas fa-eye text-muted"></i> <?php echo e(number_format($drama->total_views)); ?>
+
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('dramas.show', $drama->slug) }}" 
+                                    <a href="<?php echo e(route('dramas.show', $drama->slug)); ?>" 
                                        class="btn btn-outline-info" 
                                        title="View" 
                                        target="_blank">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.dramas.edit', $drama->slug) }}" 
+                                    <a href="<?php echo e(route('admin.dramas.edit', $drama->slug)); ?>" 
                                        class="btn btn-outline-primary" 
                                        title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <button type="button" 
                                             class="btn btn-outline-danger delete-drama" 
-                                            data-slug="{{ $drama->slug }}" 
-                                            data-title="{{ $drama->title }}" 
+                                            data-slug="<?php echo e($drama->slug); ?>" 
+                                            data-title="<?php echo e($drama->title); ?>" 
                                             title="Delete">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="8" class="text-center py-5">
                                 <i class="fas fa-film fa-3x text-muted mb-3"></i>
                                 <p class="text-muted mb-0">No drama/movies found</p>
-                                <a href="{{ route('admin.dramas.create') }}" class="btn btn-primary mt-3">
+                                <a href="<?php echo e(route('admin.dramas.create')); ?>" class="btn btn-primary mt-3">
                                     <i class="fas fa-plus"></i> Add Your First Drama/Movie
                                 </a>
                             </td>
                         </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
-        @if($dramas->hasPages())
+        <?php if($dramas->hasPages()): ?>
         <div class="card-footer d-flex justify-content-center">
             <nav aria-label="Page navigation">
                 <ul class="pagination pagination-sm">
-                    {{-- Previous Page Link --}}
-                    @if ($dramas->onFirstPage())
+                    
+                    <?php if($dramas->onFirstPage()): ?>
                         <li class="page-item disabled">
                             <span class="page-link">Previous</span>
                         </li>
-                    @else
+                    <?php else: ?>
                         <li class="page-item">
-                            <a class="page-link" href="{{ $dramas->previousPageUrl() }}" rel="prev">Previous</a>
+                            <a class="page-link" href="<?php echo e($dramas->previousPageUrl()); ?>" rel="prev">Previous</a>
                         </li>
-                    @endif
+                    <?php endif; ?>
 
-                    {{-- Pagination Elements --}}
-                    @foreach(range(1, $dramas->lastPage()) as $page)
-                        @if ($page == $dramas->currentPage())
-                            <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
-                        @else
-                            <li class="page-item"><a class="page-link" href="{{ $dramas->url($page) }}">{{ $page }}</a></li>
-                        @endif
-                    @endforeach
+                    
+                    <?php $__currentLoopData = range(1, $dramas->lastPage()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $page): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php if($page == $dramas->currentPage()): ?>
+                            <li class="page-item active"><span class="page-link"><?php echo e($page); ?></span></li>
+                        <?php else: ?>
+                            <li class="page-item"><a class="page-link" href="<?php echo e($dramas->url($page)); ?>"><?php echo e($page); ?></a></li>
+                        <?php endif; ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                    {{-- Next Page Link --}}
-                    @if ($dramas->hasMorePages())
+                    
+                    <?php if($dramas->hasMorePages()): ?>
                         <li class="page-item">
-                            <a class="page-link" href="{{ $dramas->nextPageUrl() }}" rel="next">Next</a>
+                            <a class="page-link" href="<?php echo e($dramas->nextPageUrl()); ?>" rel="next">Next</a>
                         </li>
-                    @else
+                    <?php else: ?>
                         <li class="page-item disabled">
                             <span class="page-link">Next</span>
                         </li>
-                    @endif
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
-        @endif
+        <?php endif; ?>
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 // Delete Drama/Movie with SweetAlert2
 document.querySelectorAll('.delete-drama').forEach(button => {
@@ -242,7 +247,7 @@ document.querySelectorAll('.delete-drama').forEach(button => {
                 fetch(`/admin/dramas/${dramaSlug}`, {
                     method: 'DELETE',
                     headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>',
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     }
@@ -272,5 +277,7 @@ document.querySelectorAll('.delete-drama').forEach(button => {
     });
 });
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH E:\XAMPP\htdocs\DramaVault\resources\views/admin/dramas/index.blade.php ENDPATH**/ ?>

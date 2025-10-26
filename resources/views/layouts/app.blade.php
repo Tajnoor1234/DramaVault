@@ -8,6 +8,24 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
+    <!-- Load Theme Immediately (Prevent Flash) -->
+    <script>
+        // Load theme before page renders to prevent flash
+        (function() {
+            @guest
+            // For guests, use localStorage
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            @else
+            // For logged-in users, use database value (already set in HTML tag)
+            const dbTheme = '{{ auth()->user()->theme_preference }}';
+            document.documentElement.setAttribute('data-theme', dbTheme);
+            // Sync localStorage with database
+            localStorage.setItem('theme', dbTheme);
+            @endguest
+        })();
+    </script>
+    
     <!-- Styles -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -70,7 +88,7 @@
     
     <!-- Admin Login Floating Button (Only for logged out users) -->
     @guest
-    <div class="position-fixed bottom-0 end-0 m-4" style="z-index: 1000;">
+    <div class="position-fixed end-0 m-4" style="bottom: 90px; z-index: 1000;">
         <button type="button" class="btn btn-dark rounded-circle shadow" 
                 onclick="showAdminLogin()"
                 data-bs-toggle="tooltip" 
@@ -144,6 +162,9 @@
             
             html.setAttribute('data-theme', newTheme);
             
+            // Always save to localStorage for persistence across pages
+            localStorage.setItem('theme', newTheme);
+            
             // Save to database if user is logged in
             if (@json(auth()->check())) {
                 fetch('{{ route("profile.update") }}', {
@@ -156,13 +177,25 @@
                         theme_preference: newTheme,
                         _method: 'PUT'
                     })
-                });
+                }).catch(error => console.error('Error saving theme:', error));
             }
             
             // Update icon
             const themeIcon = document.getElementById('themeIcon');
-            themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            if (themeIcon) {
+                themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
         }
+        
+        // Initialize theme icon on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set correct icon based on current theme
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const themeIcon = document.getElementById('themeIcon');
+            if (themeIcon) {
+                themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        });
         
         // Auto-hide alerts
         document.addEventListener('DOMContentLoaded', function() {

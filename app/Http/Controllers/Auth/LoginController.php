@@ -56,6 +56,14 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+        // Check if user is active (not banned)
+        if (!$user->is_active) {
+            Auth::logout();
+            return redirect()->route('login')->withErrors([
+                'email' => 'Your account has been suspended. Please contact support.'
+            ]);
+        }
+
         // Update last login time and session info
         $user->update([
             'last_login_at' => now(),
@@ -109,10 +117,19 @@ class LoginController extends Controller
         
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+            
+            // Check if user is active (not banned)
+            if (!$user->is_active) {
+                Auth::logout();
+                return redirect('/')->with('error', 'Your account has been suspended. Please contact support.');
+            }
+            
+            // Check if user is admin
             if ($user->role !== 'admin') {
                 Auth::logout();
                 return redirect('/')->with('error', 'Access denied. Admin login only.');
             }
+            
             $user->update([
                 'last_login_at' => now(),
                 'last_active_at' => now(),

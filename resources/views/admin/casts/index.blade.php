@@ -189,8 +189,41 @@
             @endif
         </div>
         @if($casts->count() > 0)
-        <div class="card-footer bg-white">
-            {{ $casts->links() }}
+        <div class="card-footer bg-white d-flex justify-content-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm">
+                    {{-- Previous Page Link --}}
+                    @if ($casts->onFirstPage())
+                        <li class="page-item disabled">
+                            <span class="page-link">Previous</span>
+                        </li>
+                    @else
+                        <li class="page-item">
+                            <a class="page-link" href="{{ $casts->previousPageUrl() }}" rel="prev">Previous</a>
+                        </li>
+                    @endif
+
+                    {{-- Pagination Elements --}}
+                    @foreach(range(1, $casts->lastPage()) as $page)
+                        @if ($page == $casts->currentPage())
+                            <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
+                        @else
+                            <li class="page-item"><a class="page-link" href="{{ $casts->url($page) }}">{{ $page }}</a></li>
+                        @endif
+                    @endforeach
+
+                    {{-- Next Page Link --}}
+                    @if ($casts->hasMorePages())
+                        <li class="page-item">
+                            <a class="page-link" href="{{ $casts->nextPageUrl() }}" rel="next">Next</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <span class="page-link">Next</span>
+                        </li>
+                    @endif
+                </ul>
+            </nav>
         </div>
         @endif
     </div>

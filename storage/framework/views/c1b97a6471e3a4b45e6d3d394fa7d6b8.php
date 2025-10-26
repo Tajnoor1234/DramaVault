@@ -192,9 +192,41 @@
             <?php endif; ?>
         </div>
         <?php if($casts->count() > 0): ?>
-        <div class="card-footer bg-white">
-            <?php echo e($casts->links()); ?>
+        <div class="card-footer bg-white d-flex justify-content-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm">
+                    
+                    <?php if($casts->onFirstPage()): ?>
+                        <li class="page-item disabled">
+                            <span class="page-link">Previous</span>
+                        </li>
+                    <?php else: ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?php echo e($casts->previousPageUrl()); ?>" rel="prev">Previous</a>
+                        </li>
+                    <?php endif; ?>
 
+                    
+                    <?php $__currentLoopData = range(1, $casts->lastPage()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $page): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php if($page == $casts->currentPage()): ?>
+                            <li class="page-item active"><span class="page-link"><?php echo e($page); ?></span></li>
+                        <?php else: ?>
+                            <li class="page-item"><a class="page-link" href="<?php echo e($casts->url($page)); ?>"><?php echo e($page); ?></a></li>
+                        <?php endif; ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                    
+                    <?php if($casts->hasMorePages()): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?php echo e($casts->nextPageUrl()); ?>" rel="next">Next</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="page-item disabled">
+                            <span class="page-link">Next</span>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </div>
         <?php endif; ?>
     </div>

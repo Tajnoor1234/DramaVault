@@ -77,9 +77,9 @@
 <style>
 .chatbot-widget {
     position: fixed;
-    bottom: 100px;
-    right: 30px;
-    z-index: 999;
+    bottom: 90px;
+    right: 20px;
+    z-index: 1001;
 }
 
 .chatbot-toggle {
@@ -126,17 +126,20 @@
 
 .chatbot-window {
     position: fixed;
-    bottom: 100px;
-    right: 30px;
-    width: 400px;
-    height: 600px;
+    bottom: 20px;
+    right: 20px;
+    width: 380px;
+    max-width: calc(100vw - 40px);
+    height: 550px;
+    max-height: calc(100vh - 100px);
     background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     animation: slideUp 0.3s ease;
+    z-index: 1000;
 }
 
 @keyframes slideUp {
@@ -153,10 +156,11 @@
 .chatbot-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 20px;
+    padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .chatbot-avatar {
@@ -173,8 +177,9 @@
 .chatbot-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 16px;
     background: #f8f9fa;
+    min-height: 0;
 }
 
 .message {
@@ -257,12 +262,13 @@
 }
 
 .chatbot-suggestions {
-    padding: 12px 20px;
+    padding: 10px 16px;
     background: white;
     border-top: 1px solid #e5e7eb;
     display: flex;
     gap: 8px;
     overflow-x: auto;
+    flex-shrink: 0;
 }
 
 .suggestion-chip {
@@ -283,9 +289,10 @@
 }
 
 .chatbot-input {
-    padding: 20px;
+    padding: 16px;
     background: white;
     border-top: 1px solid #e5e7eb;
+    flex-shrink: 0;
 }
 
 .chatbot-input .input-group {
@@ -347,15 +354,22 @@
 
 @media (max-width: 768px) {
     .chatbot-window {
-        width: calc(100vw - 40px);
-        height: calc(100vh - 150px);
-        right: 20px;
-        bottom: 90px;
+        width: calc(100vw - 30px);
+        height: calc(100vh - 120px);
+        right: 15px;
+        bottom: 15px;
+        border-radius: 12px;
     }
     
     .chatbot-widget {
-        bottom: 80px;
-        right: 20px;
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .chatbot-toggle {
+        width: 55px;
+        height: 55px;
+        font-size: 24px;
     }
 }
 </style>
